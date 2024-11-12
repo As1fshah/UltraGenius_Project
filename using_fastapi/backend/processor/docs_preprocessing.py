@@ -1,5 +1,7 @@
 from PyPDF2 import PdfReader
 from docx import Document
+from fastapi import UploadFile
+
 def get_pdf_text(file):
     text=""
     pdf_reader= PdfReader(file)
@@ -14,13 +16,13 @@ def get_docx_text(file):
         text += para.text + "\n"
     return  text
 
-def get_text(files):
+def get_text(files: list[UploadFile]):
     text = ""
     for file in files:
-        if file.name.endswith('.pdf'):
-            text += get_pdf_text(file)
-        elif file.name.endswith('.docx'):
-            text += get_docx_text(file)
+        if file.filename.endswith('.pdf'):
+            text += get_pdf_text(file.file)
+        elif file.filename.endswith('.docx'):
+            text += get_docx_text(file.file)
         else:
             return "Unsupported file type. Please upload a PDF or DOCX file."
     return text
